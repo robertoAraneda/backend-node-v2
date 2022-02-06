@@ -98,7 +98,7 @@ $ touch nodemon.json
 Luego se agrega el objeto de configuración en el archivo `nodemon.json`
 ```json
 {
-  "watch": ["src", "tests"],
+  "watch": ["src", "__tests__"],
   "ext": "js,ts,json",
   "ignore": [".git", "node_modules/"],
   "exec": "ts-node -r tsconfig-paths/register --transpile-only src/index.ts"
@@ -350,6 +350,8 @@ extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', "pretti
 
 ## Testing
 
+### Test unitarios
+
 Para crear los test de este projecto usaremos la librería  `Jest`
 
 ```bash
@@ -380,7 +382,7 @@ module.exports = {
       lines: 90,
     },
   },
-  coveragePathIgnorePatterns: ['<rootDir>/src/index.ts', '<rootDir>/src/client.ts', '<rootDir>/src/server/server.ts', '<rootDir>/src/tests'],
+  coveragePathIgnorePatterns: ['<rootDir>/src/index.ts', '<rootDir>/src/client.ts', '<rootDir>/src/server/server.ts', '<rootDir>/src/__tests__'],
   setupFiles: ['dotenv/config'],
 };
 
@@ -429,6 +431,78 @@ test('should get a list of users', async () => {
 ```
 En este test, utilizamos el objeto de prisma mock, para injectar una respuesta de la librería, como es el arreglo de users.
 Cuando llamamos el método findAllUser de la clase UserService, este devuelve el array mock.
+
+### Test de integración (end-to-end)
+Para realizar estos test, crearemos una base de datos utilziando docker.
+
+Creamos un archivo `docker-compose.yml`
+
+```yaml
+# Set the version of docker compose to use
+version: '3.9'
+
+# The containers that compose the project
+services:
+  db:
+    image: postgres:13
+    restart: always
+    container_name: integration-__tests__-prisma
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: prisma
+      POSTGRES_PASSWORD: prisma
+      POSTGRES_DB: __tests__
+```
+Creamos un archivo `.env.test` para agregar el string de conexión a la DB.
+
+```text
+DATABASE_URL="postgresql://prisma:prisma@localhost:5433/tests"
+```
+
+Luego ejecutamos el comando
+
+```bash
+$ docker-compose up -d
+```
+Una vez creado nuestro contenedor, revisamos que la base de datos denominada `tests` ha sido creada.
+```bash
+$ docker ps
+```
+```bash
+CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS          PORTS                    NAMES
+8d3120676053   postgres:13   "docker-entrypoint.s…"   24 seconds ago   Up 22 seconds   0.0.0.0:5433->5432/tcp   integration-__tests__-prisma
+```
+Ingresamos al contenedor, utilizando el ID del contenedor.
+
+```bash
+$ docker exec -it 8d3120676053 psql -U prisma __tests__
+```
+```bash
+psql (13.4 (Debian 13.4-4.pgdg110+1))
+Type "help" for help.
+
+__tests__=# \l
+                              List of databases
+   Name    | Owner  | Encoding |  Collate   |   Ctype    | Access privileges 
+-----------+--------+----------+------------+------------+-------------------
+ postgres  | prisma | UTF8     | en_US.utf8 | en_US.utf8 | 
+ template0 | prisma | UTF8     | en_US.utf8 | en_US.utf8 | =c/prisma        +
+           |        |          |            |            | prisma=CTc/prisma
+ template1 | prisma | UTF8     | en_US.utf8 | en_US.utf8 | =c/prisma        +
+           |        |          |            |            | prisma=CTc/prisma
+ __tests__     | prisma | UTF8     | en_US.utf8 | en_US.utf8 | 
+(4 rows)
+```
+
+El flujo de operaciones para ejecutar los test de integración es el siguente:
+
+**Flujo de operaciones**
+
+1. Iniciar el contenedor y crear la base de datos
+2. Migrar el esquema de DB
+3. Correr los test
+4. Eliminar el contenedor
 
 ## Producción
 

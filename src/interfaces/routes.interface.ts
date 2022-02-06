@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {} from '../client.ts';
+import {} from '../client';
 
 export interface RoutesInterface {
   path?: string;
