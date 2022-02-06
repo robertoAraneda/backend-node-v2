@@ -5,47 +5,47 @@ Este es un projecto base para desarrollar aplicaciones backend en lenguaje Javas
 ## Inicializar proyecto
 
 ```bash
-yarn init
+$ yarn init
 ```
 
 ## Instalación de GIT
 
 ```bash
-git init -b master
-git add -A
-git commit -m "commit"
-git remote add origin https://github.com/robertoAraneda/backend-node-v2.git
-git push -u origin main
+$ git init -b master
+$ git add -A
+$ git commit -m "commit"
+$ git remote add origin https://github.com/robertoAraneda/backend-node-v2.git
+$ git push -u origin main
 ```
 
 ### Crear un nuevo repositorio
 
 ```bash
-echo "# prueba-git" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M master
-git remote add origin https://github.com/robertoAraneda/prueba-git.git
-git push -u origin master
+$ echo "# prueba-git" >> README.md
+$ git init
+$ git add README.md
+$ git commit -m "first commit"
+$ git branch -M master
+$ git remote add origin https://github.com/robertoAraneda/prueba-git.git
+$ git push -u origin master
 ```
 ### Subir un repositorio ya creado
 
 ```bash
-git remote add origin https://github.com/robertoAraneda/prueba-git.git
-git branch -M master
-git push -u origin master
+$ git remote add origin https://github.com/robertoAraneda/prueba-git.git
+$ git branch -M master
+$ git push -u origin master
 ```
 
 ## Instalar Typescript
 
 ```bash
-yarn add -D typescript
+$ yarn add -D typescript
 ```
 Una vez instalado, creamos el archivo de configuración `tsconfig.json` utilizando el comando:
 
 ```bash
-tsc --init
+$ tsc --init
 ```
 Es importante que el archivo debe ser creado en la raíz del projecto (al mismo nivel del `package.json`)
 Habilitamos algunos parametros del archivo.
@@ -76,14 +76,14 @@ Se cran las carpetas bajo la carpeta root `src`.
 ## Instalar express
 
 ```bash
-yarn add express
-yarn add -D @types/node @types/express
+$ yarn add express
+$ yarn add -D @types/node @types/express
 ```
 
 Para ejecutar archivos `.ts` en tiempo de desarrollo, debemos instalar en el projecto los siguientes paquetes:
 
 ```bash
-yarn add -D ts-node tsconfig-paths
+$ yarn add -D ts-node tsconfig-paths
 ```
 Con lo anterior podemos crear un comando de execución para nodemon `ts-node -r tsconfig-paths/register --transpile-only src/index.ts`, con el que estaremos reiniciando nuestro servidor cada vez que hagamos cambios en nuestro código gracias a Nodemon.
 
@@ -92,7 +92,7 @@ Con lo anterior podemos crear un comando de execución para nodemon `ts-node -r 
 ### Crear archivo de configuración
 
 ```bash
-touch nodemon.json
+$ touch nodemon.json
 ```
 
 Luego se agrega el objeto de configuración en el archivo `nodemon.json`
@@ -107,13 +107,13 @@ Luego se agrega el objeto de configuración en el archivo `nodemon.json`
 ## Instalación de ORM Prisma
 
 ```bash
-yarn add @prisma/client
-yarn add -D prisma
+$ yarn add @prisma/client
+$ yarn add -D prisma
 ```
 Luego inicializamos el módulo de prisma
 
 ```bash
-yarn prisma init  
+$ yarn prisma init  
 ```
 
 Modificamos el archivo `.env` y agregamos los datos de conexión a nuestra base de datos PostgreSQL.
@@ -135,15 +135,14 @@ model User {
 Generamos el archivo de migración de prisma para mapear los datos de prima con la DB.
 
 ```bash
-yarn prisma migrate dev --name init
+$ yarn prisma migrate dev --name init
 ```
 
 Obtendrás una salida en la terminal como esta:
 
 ```bash
-yarn run v1.22.10
 $ /Users/robertoaraneda/Projects/Study/node-ts-v2/node_modules/.bin/prisma migrate dev --name init
-Environment variables loaded from .env
+Environment variables loaded from .env.production
 Prisma schema loaded from prisma/schema.prisma
 Datasource "db": PostgreSQL database "dev", schema "public" at "localhost:5433"
 
@@ -164,16 +163,128 @@ Your database is now in sync with your schema.
 
 ✨  Done in 6.56s.
 ```
+Para generar una instancia del cliente prisma para toda nuestra aplicación, creamos un archivo `src/cliente.ts`
+
+Para efectos de prueba agregamos el siguiente código en el archivo `cliente.ts` recién creado.
+
+```typescript
+async function main() {
+    await prisma.user.create({
+        data: {
+            name: 'Alice',
+            email: 'alice@prisma.io',
+            password: 'password'
+        },
+    })
+
+    const allUsers = await prisma.user.findMany()
+    console.dir(allUsers, { depth: null })
+}
+
+main()
+    .catch((e) => {
+        throw e
+    })
+    .finally(async () => {
+        await prisma.$disconnect()
+    })
+```
+
+Para visualizar la DB en linea usamos el comando de prisma:
+
+```bash
+$ yarn prisma studio
+```
+
+## Script
+
+Para gestionar distintos ambiendes de desarrollo, instalaremos el paquete:
+
+```bash
+$ yarn add -D cross-env
+```
+
+Para ejecutar fácilmente nuestro servidor de desarrollo, agregamos un script en nuestro archivo `package.json`
+
+```text
+ "dev": "cross-env NODE_ENV=development nodemon",
+```
+### Iniciar nuestro server de desarrollo
+
+```bash
+$ yarn dev
+```
+
+## Consultas HTTP para probar APIs
+
+Para realizar consultas HTTP, creamos una carpeta `http`. Luego creamos un archivo de pruebas `http/user.http`.
+
+Creamos una consulta a nuestra API como sigue:
+
+```http request
+GET http://localhost:3000/users
+Accept: application/json
+```
+Obtendremos una salida como esta:
+
+```http request
+GET http://localhost:3000/users
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 102
+ETag: W/"66-tgnlmHaJOyi8rMXLSar1UXjeOFc"
+Date: Sun, 06 Feb 2022 14:43:44 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{
+  "data": [
+    {
+      "id": 1,
+      "email": "alice@prisma.io",
+      "name": "Alice",
+      "password": "password"
+    }
+  ],
+  "message": "findAll"
+}
+
+Response code: 200 (OK); Time: 242ms; Content length: 102 bytes
+```
 
 ## Add Developer dependencies
 
 ```bash
-yarn add -D typescript nodemon prettier
+$ yarn add -D typescript nodemon prettier
 ```
 
 
 ## Add dependencies
 
 ```bash
-yarn add express
+$ yarn add express
 ```
+
+## Producción
+
+Para compilar nuestro proyecto a producción, creamos el siguiente script en nuestro archivo `package.json`
+Previamente debemos instalar el paquete:
+
+```bash
+$ yarn add -D rimraf
+```
+Este paquete nos gestiona la eliminación de la carpeta `dist` de forma segura cada vez que necesitemos compilar nuestro proyecto.
+
+```bash
+$ yarn add dotenv
+$ yarn add dotenv-cli
+```
+Estos paquetes nos permiten manejar distintas variables de entorno.
+
+```text
+   "build": "rimraf dist && tsc",
+   "prod": "npm run build && dotenv -e .env -- npx prisma migrate prod --name postgres-init && cross-env NODE_ENV=production node dist/index.js",
+```
+Por defecto, `prisma` usa el archivo `.env` para buscar variables de entorno. Debemos crear este archivo en producción.
