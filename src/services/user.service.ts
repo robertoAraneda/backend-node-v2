@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import prisma from '../client.ts';
+import prisma from '../client';
 
 class UserService {
   public users = prisma.user;
