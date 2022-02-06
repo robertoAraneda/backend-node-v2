@@ -163,9 +163,9 @@ Your database is now in sync with your schema.
 
 ✨  Done in 6.56s.
 ```
-Para generar una instancia del cliente prisma para toda nuestra aplicación, creamos un archivo `src/cliente.ts`
+Para generar una instancia del cliente prisma para toda nuestra aplicación, creamos un archivo `src/client.ts`
 
-Para efectos de prueba agregamos el siguiente código en el archivo `cliente.ts` recién creado.
+Para efectos de prueba agregamos el siguiente código en el archivo `client.ts` recién creado.
 
 ```typescript
 async function main() {
@@ -348,18 +348,50 @@ Agregamos en el archivo `.eslintrc.js` la siguiente línea:
 extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', "prettier"],
 ```
 
-## Add Developer dependencies
+## Testing
+
+Para crear los test de este projecto usaremos la librería  `Jest`
 
 ```bash
-$ yarn add -D typescript nodemon prettier
+$ yarn add -D jest 
+$ yarn add -D ts-jest 
+$ yarn add -D @types/jest     
 ```
-
-
-## Add dependencies
+Luego creamos el archivo de configuración de jest
 
 ```bash
-$ yarn add express
+$ yarn jest --init
 ```
+
+El archivo de configuración quedaría como sigue:
+
+```js
+module.exports = {
+  verbose: true,
+  clearMocks: true,
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  roots: ['<rootDir>/src'],
+  setupFilesAfterEnv: ['<rootDir>/src/singleton.ts'],
+  collectCoverage: true,
+  collectCoverageFrom: ['./src/**'],
+  coverageThreshold: {
+    global: {
+      lines: 90,
+    },
+  },
+  coveragePathIgnorePatterns: ['<rootDir>/src/index.ts', '<rootDir>/src/client.ts', '<rootDir>/src/server/server.ts', '<rootDir>/src/tests'],
+  setupFiles: ['dotenv/config'],
+};
+
+```
+
+Para realizar un mock de la libreria Prisma, instalamos el siguiente paquete:
+
+```bash
+$ yarn add -D jest-mock-extended
+```
+
 
 ## Producción
 
@@ -382,3 +414,16 @@ Estos paquetes nos permiten manejar distintas variables de entorno.
    "prod": "npm run build && dotenv -e .env -- npx prisma migrate prod --name postgres-init && cross-env NODE_ENV=production node dist/index.js",
 ```
 Por defecto, `prisma` usa el archivo `.env` para buscar variables de entorno. Debemos crear este archivo en producción.
+
+## Developer dependencies
+
+```bash
+$ yarn add -D typescript nodemon prettier
+```
+
+
+## Dependencies
+
+```bash
+$ yarn add express
+```

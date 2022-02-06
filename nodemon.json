@@ -1,7 +1,10 @@
 {
   "watch": ["src", "tests"],
   "ext": "js,ts,json",
-  "ignore": [".git", "node_modules/"],
+  "ignore": [".git", "node_modules", "dist"],
   "exec": "ts-node -r tsconfig-paths/register --transpile-only src/index.ts",
-  "verbose": true
+  "verbose": true,
+  "events": {
+    "restart": "yarn lint"
+  }
 }

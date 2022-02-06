@@ -11,7 +11,6 @@ async function main() {
             password: 'password'
         },
     })
-
     const allUsers = await prisma.user.findMany()
     console.dir(allUsers, { depth: null })
 
