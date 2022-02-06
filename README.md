@@ -69,11 +69,17 @@ Habilitamos algunos parametros del archivo.
   }
 }
 ```
-Ya estamos listos para crar nuestro archivo `index.ts`
+
+El proyecto esta desarrollado de forma modular, separando la lógica en `controllers`, `routes`, `dtos`, `http`, `middlewares`, `routes`, `server`, `services` y `tests`.
+Se cran las carpetas bajo la carpeta root `src`.
+
+## Instalar express
 
 ```bash
-touch index.ts
+yarn add express
+yarn add -D @types/node @types/express
 ```
+
 Para ejecutar archivos `.ts` en tiempo de desarrollo, debemos instalar en el projecto los siguientes paquetes:
 
 ```bash
@@ -96,6 +102,35 @@ Luego se agrega el objeto de configuración en el archivo `nodemon.json`
   "ext": "js,ts,json",
   "ignore": [".git", "node_modules/"],
   "exec": "ts-node -r tsconfig-paths/register --transpile-only src/index.ts"
+}
+```
+## Instalación de ORM Prisma
+
+```bash
+yarn add @prisma/client
+yarn add -D prisma
+```
+Luego inicializamos el módulo de prisma
+
+```bash
+yarn prisma init  
+```
+
+Modificamos el archivo `.env` y agregamos los datos de conexión a nuestra base de datos PostgreSQL.
+
+```text
+DATABASE_URL="postgresql://prisma:prisma@localhost:5433/dev?schema=public"
+```
+
+Agregamos la entidad User para efectos de prueba de conexión.
+
+```prisma
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+  password String?
+  posts Post[]
 }
 ```
 
