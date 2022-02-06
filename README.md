@@ -254,6 +254,100 @@ Keep-Alive: timeout=5
 Response code: 200 (OK); Time: 242ms; Content length: 102 bytes
 ```
 
+## ESlint
+Instalaremos la librería de ESlint para potenciar el desarrollo y mejorar la sintaxis y manejo de errores durante el desarrollo.
+
+```bash
+$ yarn add -D eslint 
+$ yarn add -D @typescript-eslint/parser 
+$ yarn add -D @typescript-eslint/eslint-plugin
+```
+Luego inicializamos eslint y seguimos las instrucciones.
+
+```bash
+$ yarn eslint --init
+```
+Creamos un archivo `.eslintignore` y agregamos las siguientes lineas para evitar que eslint revise estos archivos.
+
+```text
+/dist
+/node_modules
+.*
+jest.config.js
+```
+
+Agregamos las siguientes reglas al archivo `.eslintrc.js`. Debería quedar como sigue:
+
+```js
+module.exports = {
+    "rules": {
+        semi: ['error', 'always'],
+        quotes: ['error', 'single'],
+        '@typescript-eslint/no-unused-vars': 'error',
+        // to enforce using type for object type definitions, can be type or interface
+        '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+    }
+}
+```
+
+Agregamos un escript en el archivo `package.json`
+
+```text
+"lint": "eslint --ignore-path .eslintignore --ext .js,.ts ."
+```
+
+Si queremos correr el comando y que ESlint nos corrija los archivos en los cuales encontró error, ejecutamos el siguiente comando:
+```bash
+$ yarn lint -- --fix
+```
+
+## Prettier
+Esta librería permite que el estilo de codificación se mantenga siempre igual, automátizando muchos procesos.
+
+```bash
+$ yarn add -D prettier
+```
+
+Luego creamos un archivo `.prettierrc` y agregamos lo siguiente:
+
+```json
+{
+  "printWidth": 150,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "semi": true,
+  "arrowParens": "always",
+  "bracketSpacing": true
+}
+```
+
+Creamos un archivo `.prettierignore` y agregamos lo siguiente:
+
+```text
+.idea
+.eslintrc.js
+tsconfig.json
+```
+
+Finalmente agregamos un script en el archivo `package.json`, para formatear el código.
+
+```text
+"format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+```
+
+Para evitar conflictos de formateo de código entre ESLint y Prettier, instalamos el siguiente plugin:
+
+```bash
+$ yarn add -D eslint-config-prettier   
+```
+
+Agregamos en el archivo `.eslintrc.js` la siguiente línea:
+
+```text
+extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', "prettier"],
+```
+
 ## Add Developer dependencies
 
 ```bash
