@@ -122,7 +122,7 @@ Modificamos el archivo `.env` y agregamos los datos de conexión a nuestra base 
 DATABASE_URL="postgresql://prisma:prisma@localhost:5433/dev?schema=public"
 ```
 
-Agregamos la entidad User para efectos de prueba de conexión.
+Agregamos la entidad User para efectos de prueba de conexión en el archivo `prisma/schema.prisma`.
 
 ```prisma
 model User {
@@ -130,8 +130,39 @@ model User {
   email String  @unique
   name  String?
   password String?
-  posts Post[]
 }
+```
+Generamos el archivo de migración de prisma para mapear los datos de prima con la DB.
+
+```bash
+yarn prisma migrate dev --name init
+```
+
+Obtendrás una salida en la terminal como esta:
+
+```bash
+yarn run v1.22.10
+$ /Users/robertoaraneda/Projects/Study/node-ts-v2/node_modules/.bin/prisma migrate dev --name init
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "dev", schema "public" at "localhost:5433"
+
+PostgreSQL database dev created at localhost:5433
+
+Applying migration `20220206141834_init`
+
+The following migration(s) have been created and applied from new schema changes:
+
+migrations/
+  └─ 20220206141834_init/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+✔ Generated Prisma Client (3.9.1 | library) to ./node_modules/@prisma/client in 111ms
+
+
+✨  Done in 6.56s.
 ```
 
 ## Add Developer dependencies
