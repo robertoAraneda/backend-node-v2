@@ -391,7 +391,44 @@ Para realizar un mock de la libreria Prisma, instalamos el siguiente paquete:
 ```bash
 $ yarn add -D jest-mock-extended
 ```
+Luego creamos un archivo llamado `singleton.ts`, el cual servirá para crar nuestro prisma mock en base al archivo de `client.ts`. Este archivo se utiliza en el archivo de configuración de `Jest`, para luego utilizarlo en los test.
 
+Para crear los los test, debemos crear una carpeta llamada `__test__`, en el directorio donde estan los archivos para test.
+
+En el siguiente ejemplo, creamos un archivo `services/__test__/user.service.spec.ts`
+
+Este archivo contiene el siguiente código:
+
+```typescript
+import { prismaMock } from '../../singleton';
+import UserService from '../user.service';
+
+const userService: UserService = new UserService();
+
+test('should get a list of users', async () => {
+  const users = [
+    {
+      id: 1,
+      name: 'Rich',
+      email: 'hello@prisma.io',
+      password: 'true',
+    },
+  ];
+
+  prismaMock.user.findMany.mockResolvedValue(users);
+
+  await expect(userService.findAllUser()).resolves.toEqual([
+    {
+      id: 1,
+      name: 'Rich',
+      email: 'hello@prisma.io',
+      password: 'true',
+    },
+  ]);
+});
+```
+En este test, utilizamos el objeto de prisma mock, para injectar una respuesta de la librería, como es el arreglo de users.
+Cuando llamamos el método findAllUser de la clase UserService, este devuelve el array mock.
 
 ## Producción
 

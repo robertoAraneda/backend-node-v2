@@ -3,7 +3,7 @@ import UserService from '../user.service';
 
 const userService: UserService = new UserService();
 
-test('should create new user ', async () => {
+test('should get a list of users', async () => {
   const users = [
     {
       id: 1,
