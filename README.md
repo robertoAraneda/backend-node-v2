@@ -29,6 +29,7 @@ $ git branch -M master
 $ git remote add origin https://github.com/robertoAraneda/prueba-git.git
 $ git push -u origin master
 ```
+
 ### Subir un repositorio ya creado
 
 ```bash
@@ -42,30 +43,32 @@ $ git push -u origin master
 ```bash
 $ yarn add -D typescript
 ```
+
 Una vez instalado, creamos el archivo de configuración `tsconfig.json` utilizando el comando:
 
 ```bash
 $ tsc --init
 ```
+
 Es importante que el archivo debe ser creado en la raíz del projecto (al mismo nivel del `package.json`)
 Habilitamos algunos parametros del archivo.
 
 ```json
 {
   "compilerOptions": {
-    "target": "es2017",                           /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
-    "module": "commonjs",                         /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
-    "sourceMap": true,                            /* Generates corresponding '.map' file. */
-    "outDir": "./dist",                           /* Redirect output structure to the directory. */
-    "removeComments": true,                       /* Do not emit comments to output. */
-    "strict": true,                               /* Enable all strict type-checking options. */
-    "noImplicitAny": false,                       /* Raise error on expressions and declarations with an implied 'any' type. */
-    "strictNullChecks": false,                    /* Enable strict null checks. */
-    "baseUrl": "./",                              /* Base directory to resolve non-absolute module names. */
-    "allowSyntheticDefaultImports": true,         /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
-    "esModuleInterop": true,                      /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
-    "skipLibCheck": true,                         /* Skip type checking of declaration files. */
-    "forceConsistentCasingInFileNames": true      /* Disallow inconsistently-cased references to the same file. */
+    "target": "es2017" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */,
+    "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
+    "sourceMap": true /* Generates corresponding '.map' file. */,
+    "outDir": "./dist" /* Redirect output structure to the directory. */,
+    "removeComments": true /* Do not emit comments to output. */,
+    "strict": true /* Enable all strict type-checking options. */,
+    "noImplicitAny": false /* Raise error on expressions and declarations with an implied 'any' type. */,
+    "strictNullChecks": false /* Enable strict null checks. */,
+    "baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
+    "allowSyntheticDefaultImports": true /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */,
+    "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
+    "skipLibCheck": true /* Skip type checking of declaration files. */,
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   }
 }
 ```
@@ -85,6 +88,7 @@ Para ejecutar archivos `.ts` en tiempo de desarrollo, debemos instalar en el pro
 ```bash
 $ yarn add -D ts-node tsconfig-paths
 ```
+
 Con lo anterior podemos crear un comando de execución para nodemon `ts-node -r tsconfig-paths/register --transpile-only src/index.ts`, con el que estaremos reiniciando nuestro servidor cada vez que hagamos cambios en nuestro código gracias a Nodemon.
 
 ## Nodemon
@@ -96,6 +100,7 @@ $ touch nodemon.json
 ```
 
 Luego se agrega el objeto de configuración en el archivo `nodemon.json`
+
 ```json
 {
   "watch": ["src", "__tests__"],
@@ -104,16 +109,18 @@ Luego se agrega el objeto de configuración en el archivo `nodemon.json`
   "exec": "ts-node -r tsconfig-paths/register --transpile-only src/index.ts"
 }
 ```
+
 ## Instalación de ORM Prisma
 
 ```bash
 $ yarn add @prisma/client
 $ yarn add -D prisma
 ```
+
 Luego inicializamos el módulo de prisma
 
 ```bash
-$ yarn prisma init  
+$ yarn prisma init
 ```
 
 Modificamos el archivo `.env` y agregamos los datos de conexión a nuestra base de datos PostgreSQL.
@@ -132,6 +139,7 @@ model User {
   password String?
 }
 ```
+
 Generamos el archivo de migración de prisma para mapear los datos de prima con la DB.
 
 ```bash
@@ -163,31 +171,32 @@ Your database is now in sync with your schema.
 
 ✨  Done in 6.56s.
 ```
+
 Para generar una instancia del cliente prisma para toda nuestra aplicación, creamos un archivo `src/client.ts`
 
 Para efectos de prueba agregamos el siguiente código en el archivo `client.ts` recién creado.
 
 ```typescript
 async function main() {
-    await prisma.user.create({
-        data: {
-            name: 'Alice',
-            email: 'alice@prisma.io',
-            password: 'password'
-        },
-    })
+  await prisma.user.create({
+    data: {
+      name: 'Alice',
+      email: 'alice@prisma.io',
+      password: 'password',
+    },
+  });
 
-    const allUsers = await prisma.user.findMany()
-    console.dir(allUsers, { depth: null })
+  const allUsers = await prisma.user.findMany();
+  console.dir(allUsers, { depth: null });
 }
 
 main()
-    .catch((e) => {
-        throw e
-    })
-    .finally(async () => {
-        await prisma.$disconnect()
-    })
+  .catch((e) => {
+    throw e;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
 ```
 
 Para visualizar la DB en linea usamos el comando de prisma:
@@ -209,6 +218,7 @@ Para ejecutar fácilmente nuestro servidor de desarrollo, agregamos un script en
 ```text
  "dev": "cross-env NODE_ENV=development nodemon",
 ```
+
 ### Iniciar nuestro server de desarrollo
 
 ```bash
@@ -225,6 +235,7 @@ Creamos una consulta a nuestra API como sigue:
 GET http://localhost:3000/users
 Accept: application/json
 ```
+
 Obtendremos una salida como esta:
 
 ```http request
@@ -255,18 +266,21 @@ Response code: 200 (OK); Time: 242ms; Content length: 102 bytes
 ```
 
 ## ESlint
+
 Instalaremos la librería de ESlint para potenciar el desarrollo y mejorar la sintaxis y manejo de errores durante el desarrollo.
 
 ```bash
-$ yarn add -D eslint 
-$ yarn add -D @typescript-eslint/parser 
+$ yarn add -D eslint
+$ yarn add -D @typescript-eslint/parser
 $ yarn add -D @typescript-eslint/eslint-plugin
 ```
+
 Luego inicializamos eslint y seguimos las instrucciones.
 
 ```bash
 $ yarn eslint --init
 ```
+
 Creamos un archivo `.eslintignore` y agregamos las siguientes lineas para evitar que eslint revise estos archivos.
 
 ```text
@@ -280,14 +294,14 @@ Agregamos las siguientes reglas al archivo `.eslintrc.js`. Debería quedar como 
 
 ```js
 module.exports = {
-    "rules": {
-        semi: ['error', 'always'],
-        quotes: ['error', 'single'],
-        '@typescript-eslint/no-unused-vars': 'error',
-        // to enforce using type for object type definitions, can be type or interface
-        '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
-    }
-}
+  rules: {
+    semi: ['error', 'always'],
+    quotes: ['error', 'single'],
+    '@typescript-eslint/no-unused-vars': 'error',
+    // to enforce using type for object type definitions, can be type or interface
+    '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+  },
+};
 ```
 
 Agregamos un escript en el archivo `package.json`
@@ -297,11 +311,13 @@ Agregamos un escript en el archivo `package.json`
 ```
 
 Si queremos correr el comando y que ESlint nos corrija los archivos en los cuales encontró error, ejecutamos el siguiente comando:
+
 ```bash
 $ yarn lint -- --fix
 ```
 
 ## Prettier
+
 Esta librería permite que el estilo de codificación se mantenga siempre igual, automátizando muchos procesos.
 
 ```bash
@@ -339,7 +355,7 @@ Finalmente agregamos un script en el archivo `package.json`, para formatear el c
 Para evitar conflictos de formateo de código entre ESLint y Prettier, instalamos el siguiente plugin:
 
 ```bash
-$ yarn add -D eslint-config-prettier   
+$ yarn add -D eslint-config-prettier
 ```
 
 Agregamos en el archivo `.eslintrc.js` la siguiente línea:
@@ -352,13 +368,14 @@ extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', "pretti
 
 ### Test unitarios
 
-Para crear los test de este projecto usaremos la librería  `Jest`
+Para crear los test de este projecto usaremos la librería `Jest`
 
 ```bash
-$ yarn add -D jest 
-$ yarn add -D ts-jest 
-$ yarn add -D @types/jest     
+$ yarn add -D jest
+$ yarn add -D ts-jest
+$ yarn add -D @types/jest
 ```
+
 Luego creamos el archivo de configuración de jest
 
 ```bash
@@ -374,7 +391,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
-  setupFilesAfterEnv: ['<rootDir>/src/singleton.ts'],
+  //setupFilesAfterEnv: ['<rootDir>/src/singleton.ts'],
   collectCoverage: true,
   collectCoverageFrom: ['./src/**'],
   coverageThreshold: {
@@ -385,7 +402,6 @@ module.exports = {
   coveragePathIgnorePatterns: ['<rootDir>/src/index.ts', '<rootDir>/src/client.ts', '<rootDir>/src/server/server.ts', '<rootDir>/src/__tests__'],
   setupFiles: ['dotenv/config'],
 };
-
 ```
 
 Para realizar un mock de la libreria Prisma, instalamos el siguiente paquete:
@@ -393,6 +409,7 @@ Para realizar un mock de la libreria Prisma, instalamos el siguiente paquete:
 ```bash
 $ yarn add -D jest-mock-extended
 ```
+
 Luego creamos un archivo llamado `singleton.ts`, el cual servirá para crar nuestro prisma mock en base al archivo de `client.ts`. Este archivo se utiliza en el archivo de configuración de `Jest`, para luego utilizarlo en los test.
 
 Para crear los los test, debemos crear una carpeta llamada `__test__`, en el directorio donde estan los archivos para test.
@@ -429,10 +446,12 @@ test('should get a list of users', async () => {
   ]);
 });
 ```
+
 En este test, utilizamos el objeto de prisma mock, para injectar una respuesta de la librería, como es el arreglo de users.
 Cuando llamamos el método findAllUser de la clase UserService, este devuelve el array mock.
 
 ### Test de integración (end-to-end)
+
 Para realizar estos test, crearemos una base de datos utilziando docker.
 
 Creamos un archivo `docker-compose.yml`
@@ -454,6 +473,7 @@ services:
       POSTGRES_PASSWORD: prisma
       POSTGRES_DB: __tests__
 ```
+
 Creamos un archivo `.env.test` para agregar el string de conexión a la DB.
 
 ```text
@@ -465,33 +485,38 @@ Luego ejecutamos el comando
 ```bash
 $ docker-compose up -d
 ```
+
 Una vez creado nuestro contenedor, revisamos que la base de datos denominada `tests` ha sido creada.
+
 ```bash
 $ docker ps
 ```
+
 ```bash
 CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS          PORTS                    NAMES
 8d3120676053   postgres:13   "docker-entrypoint.s…"   24 seconds ago   Up 22 seconds   0.0.0.0:5433->5432/tcp   integration-__tests__-prisma
 ```
+
 Ingresamos al contenedor, utilizando el ID del contenedor.
 
 ```bash
 $ docker exec -it 8d3120676053 psql -U prisma __tests__
 ```
+
 ```bash
 psql (13.4 (Debian 13.4-4.pgdg110+1))
 Type "help" for help.
 
 __tests__=# \l
                               List of databases
-   Name    | Owner  | Encoding |  Collate   |   Ctype    | Access privileges 
+   Name    | Owner  | Encoding |  Collate   |   Ctype    | Access privileges
 -----------+--------+----------+------------+------------+-------------------
- postgres  | prisma | UTF8     | en_US.utf8 | en_US.utf8 | 
+ postgres  | prisma | UTF8     | en_US.utf8 | en_US.utf8 |
  template0 | prisma | UTF8     | en_US.utf8 | en_US.utf8 | =c/prisma        +
            |        |          |            |            | prisma=CTc/prisma
  template1 | prisma | UTF8     | en_US.utf8 | en_US.utf8 | =c/prisma        +
            |        |          |            |            | prisma=CTc/prisma
- __tests__     | prisma | UTF8     | en_US.utf8 | en_US.utf8 | 
+ __tests__     | prisma | UTF8     | en_US.utf8 | en_US.utf8 |
 (4 rows)
 ```
 
@@ -504,6 +529,22 @@ El flujo de operaciones para ejecutar los test de integración es el siguente:
 3. Correr los test
 4. Eliminar el contenedor
 
+Agregar los script en el archivo `package.json`:
+
+```text
+"test:integration": "cross-env NODE_ENV=test jest -i --testPathPattern=src/__tests__",
+"test": "dotenv -e .env.test jest -i",
+"test:unit": "cross-env NODE_ENV=test jest -i --setupFilesAfterEnv $(PWD)/src/singleton.ts --testPathIgnorePatterns=src/__tests__",
+```
+
+El comanto test, ejecuta todos los tests (Inclute test unitarios y de integración).
+
+Para efectuar peticiones HTTP en los test de integración, agregamos el siguiente paquete:
+
+```bash
+$ yarn add -D supertest
+```
+
 ## Producción
 
 Para compilar nuestro proyecto a producción, creamos el siguiente script en nuestro archivo `package.json`
@@ -512,18 +553,21 @@ Previamente debemos instalar el paquete:
 ```bash
 $ yarn add -D rimraf
 ```
+
 Este paquete nos gestiona la eliminación de la carpeta `dist` de forma segura cada vez que necesitemos compilar nuestro proyecto.
 
 ```bash
 $ yarn add dotenv
 $ yarn add dotenv-cli
 ```
+
 Estos paquetes nos permiten manejar distintas variables de entorno.
 
 ```text
    "build": "rimraf dist && tsc",
    "prod": "npm run build && dotenv -e .env -- npx prisma migrate prod --name postgres-init && cross-env NODE_ENV=production node dist/index.js",
 ```
+
 Por defecto, `prisma` usa el archivo `.env` para buscar variables de entorno. Debemos crear este archivo en producción.
 
 ## Developer dependencies
@@ -531,7 +575,6 @@ Por defecto, `prisma` usa el archivo `.env` para buscar variables de entorno. De
 ```bash
 $ yarn add -D typescript nodemon prettier
 ```
-
 
 ## Dependencies
 

@@ -1,5 +1,5 @@
 {
-  "watch": ["src", "tests"],
+  "watch": ["src"],
   "ext": "js,ts,json",
   "ignore": [".git", "node_modules", "dist"],
   "exec": "ts-node -r tsconfig-paths/register --transpile-only src/index.ts",
