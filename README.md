@@ -550,7 +550,7 @@ $ yarn add -D supertest
 Para compilar nuestro proyecto a producción, creamos el siguiente script en nuestro archivo `package.json`
 Previamente debemos instalar el paquete:
 
-```bash
+```bash "
 $ yarn add -D rimraf
 ```
 
